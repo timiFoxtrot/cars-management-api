@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
 import { Request, Response } from "express";
 import app from "./app";
-
-dotenv.config();
+import connect from "./common/config/database";
+import { handleErrors } from "./common/middlewares/error";
+import { config } from "./common/config";
 
 app.get("/health", (req: Request, res: Response): any => {
   return res.status(200).json({
@@ -11,6 +11,8 @@ app.get("/health", (req: Request, res: Response): any => {
     data: null,
   });
 });
+
+app.use(handleErrors);
 
 app.use((req, res, _next) => {
   res.status(404).json({
@@ -21,7 +23,8 @@ app.use((req, res, _next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = config.PORT || 3000;
 app.listen(PORT, async () => {
+  await connect();
   console.log(`Server running on port ${PORT}`);
 });
