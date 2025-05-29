@@ -1,7 +1,7 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
-export interface ICar extends Document {
+export interface ICar {
   _id: string;
   brand: string;
   carModel: string;

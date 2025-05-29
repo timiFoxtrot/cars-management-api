@@ -1,7 +1,7 @@
-import { Schema, Document, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
-export interface ICustomer extends Document {
+export interface ICustomer  {
   _id: string;
   name: string;
   email: string;

@@ -24,7 +24,6 @@ export const handleErrors = (
       .status(400)
       .json({ status: "error", message: "Validation Error", error: errors });
   } else {
-    console.log("here", err);
     res.status(500).json({ status: "error", message: "Internal server error" });
   }
 };

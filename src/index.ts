@@ -3,6 +3,10 @@ import app from "./app";
 import connect from "./common/config/database";
 import { handleErrors } from "./common/middlewares/error";
 import { config } from "./common/config";
+import { managerRouter } from "./routes/manager.route";
+import { customerRouter } from "./routes/customer.route";
+import { categoryRouter } from "./routes/category.route";
+import { carRouter } from "./routes/car.route";
 
 app.get("/health", (req: Request, res: Response): any => {
   return res.status(200).json({
@@ -11,6 +15,11 @@ app.get("/health", (req: Request, res: Response): any => {
     data: null,
   });
 });
+
+app.use("/api/auth/manager", managerRouter);
+app.use("/api/auth/customer", customerRouter);
+app.use("/api/auth/category", categoryRouter);
+app.use("/api/auth/car", carRouter);
 
 app.use(handleErrors);
 

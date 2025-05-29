@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
-import User from "../../models/customer.model";
+// import User from "../../models/customer.model";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
+import { config } from "../config";
 
 declare global {
   namespace Express {
@@ -12,40 +13,45 @@ declare global {
   }
 }
 
-interface Param {
-  isAdmin?: boolean;
+export enum roles {
+  MANAGER = "manager",
+  CUSTOMER = "customer",
 }
 
-export const authenticate = (param: Param) => {
+export const authenticate = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
 
     if (!authorization) {
-      return res.status(401).json({
+      res.status(401).json({
         status: "error",
         statusCode: 401,
         message: "Invalid authorization header",
       });
+      return;
     }
 
     const [, token] = authorization.split(" ");
 
     try {
       if (!token) {
-        return res.status(401).json({
+        res.status(401).json({
           status: "error",
           statusCode: 401,
           message: "No token provided",
         });
+        return;
       }
 
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET!
-      ) as jwt.JwtPayload;
+      const decoded = jwt.verify(token, config.JWT_SECRET!) as jwt.JwtPayload;
 
-      const user: any = await User.findById(decoded.id);
-      if (!user) return res.status(401).json({ message: "Access denied" });
+      // const user: any = await User.findById(decoded.id);
+      // if (!user) {
+      //   res.status(401).json({ message: "Access denied" });
+      //   return;
+      // }
+
+      const user = decoded as { id: string; role: string };
 
       //   if (param.isAdmin) {
       //     if (!user.roles.includes(Roles.ADMIN)) {
@@ -57,23 +63,24 @@ export const authenticate = (param: Param) => {
       //     }
       //   }
 
-      delete user.toObject().password;
+      // delete user.toObject().password;
       req.user = user;
       next();
     } catch (error) {
       if (error instanceof TokenExpiredError) {
-        return res
-          .status(401)
-          .json({ status: "error", message: error.message });
+        res.status(401).json({ status: "error", message: error.message });
+        return;
       }
 
       if (error instanceof JsonWebTokenError) {
-        return next(new UnauthorizedError("Invalid token"));
+        next(new UnauthorizedError("Invalid token"));
+        return;
       }
 
       res
         .status(error.statusCode)
         .json({ status: "error", message: error.message });
+      return;
     }
   };
 };
@@ -81,7 +88,8 @@ export const authenticate = (param: Param) => {
 export const authorize = (roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Access denied" });
+      res.status(403).json({ message: "Access denied" });
+      return;
     }
     next();
   };
