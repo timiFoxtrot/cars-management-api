@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
-export interface ICustomer  {
+export interface ICustomer {
   _id: string;
   name: string;
   email: string;
@@ -18,14 +18,5 @@ const customerSchema = new Schema(
   { timestamps: true }
 );
 
-const Customer = model<ICustomer>("User", customerSchema);
+const Customer = model<ICustomer>("Customer", customerSchema);
 export default Customer;
-// // Hash password before saving user
-// customerSchema.pre("save", async function (next) {
-//   const customer = this as ICustomer;
-//   if (!customer.isModified("password")) return next();
-//   const salt = await bcrypt.genSalt(10);
-//   customer.password = await bcrypt.hash(customer.password, salt);
-//   next();
-// });
-

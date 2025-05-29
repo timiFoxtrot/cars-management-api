@@ -1,18 +1,21 @@
-import { config } from "../common/config";
 import { roles } from "../common/middlewares/auth";
 import { UnauthorizedError } from "../common/errors/UnauthorizedError";
 import { IManager } from "../models/manager.model";
 import { ManagerRepository } from "../repositories/manager.repository";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { CustomerRepository } from "../repositories/customer.repository";
+import { HashService } from "./hash.service";
+import { TokenService } from "./token.service";
 
 export class ManagerService {
-  constructor(private readonly managerRepo: ManagerRepository, 
-    private readonly customerRepo: CustomerRepository) {}
+  constructor(
+    private readonly managerRepo: ManagerRepository,
+    private readonly customerRepo: CustomerRepository,
+    private hashService: HashService,
+    private tokenService: TokenService
+  ) {}
 
   async createManager(categoryData: IManager) {
-    const hashedPassword = await bcrypt.hash(categoryData.password, 10);
+    const hashedPassword = await this.hashService.hash(categoryData.password);
     const result = await this.managerRepo.createManager({
       ...categoryData,
       password: hashedPassword,
@@ -28,22 +31,24 @@ export class ManagerService {
       throw new UnauthorizedError("Invalid credential");
     }
 
-    const isValidPassword = await bcrypt.compare(pass, manager.password);
+    const isValidPassword = await this.hashService.compare(
+      pass,
+      manager.password
+    );
 
     if (!isValidPassword) {
       throw new UnauthorizedError("Invalid credential");
     }
 
-    const token = jwt.sign(
+    const token = this.tokenService.sign(
       { id: manager._id, role: roles.MANAGER },
-      config.JWT_SECRET!,
-      { expiresIn: "1d" }
+      "1d"
     );
 
     return token;
   }
 
   async getCustomers() {
-    return this.customerRepo.getCustomers()
+    return this.customerRepo.getCustomers();
   }
 }

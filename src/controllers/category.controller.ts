@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { CategoryService } from "../services/category.service";
-// import logger from "../utils/logger.utilities";
 
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
@@ -14,7 +13,6 @@ export class CategoryController {
         data: result,
       });
     } catch (error: any) {
-      //   logger.error(`ERROR CREATING CATEGORY: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message,
@@ -38,7 +36,6 @@ export class CategoryController {
         });
       }
     } catch (error: any) {
-      //   logger.error(`ERROR RETRIEVING CATEGORY: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message,
@@ -55,7 +52,6 @@ export class CategoryController {
         data: categories,
       });
     } catch (error: any) {
-      //   logger.error(`ERROR RETRIEVING CATEGORIES: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message,
@@ -82,7 +78,6 @@ export class CategoryController {
         });
       }
     } catch (error: any) {
-      //   logger.error(`ERROR UPDATING CATEGORY: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message,
@@ -106,7 +101,6 @@ export class CategoryController {
         });
       }
     } catch (error: any) {
-      //   logger.error(`ERROR DELETING CATEGORY: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message,

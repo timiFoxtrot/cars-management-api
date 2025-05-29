@@ -1,18 +1,19 @@
-import { config } from "../common/config";
 import { roles } from "../common/middlewares/auth";
 import { UnauthorizedError } from "../common/errors/UnauthorizedError";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { CustomerRepository } from "../repositories/customer.repository";
 import { ICustomer } from "../models/customer.model";
+import { HashService } from "./hash.service";
+import { TokenService } from "./token.service";
 
 export class CustomerService {
   constructor(
     private readonly customerRepo: CustomerRepository,
+    private hashService: HashService,
+    private tokenService: TokenService
   ) {}
 
   async createCustomer(categoryData: ICustomer) {
-    const hashedPassword = await bcrypt.hash(categoryData.password, 10);
+    const hashedPassword = await this.hashService.hash(categoryData.password);
     const result = await this.customerRepo.createCustomer({
       ...categoryData,
       password: hashedPassword,
@@ -28,16 +29,18 @@ export class CustomerService {
       throw new UnauthorizedError("Invalid credential");
     }
 
-    const isValidPassword = await bcrypt.compare(pass, customer.password);
+    const isValidPassword = await this.hashService.compare(
+      pass,
+      customer.password
+    );
 
     if (!isValidPassword) {
       throw new UnauthorizedError("Invalid credential");
     }
 
-    const token = jwt.sign(
+    const token = this.tokenService.sign(
       { id: customer._id, role: roles.CUSTOMER },
-      config.JWT_SECRET!,
-      { expiresIn: "1d" }
+      "1d"
     );
 
     return token;

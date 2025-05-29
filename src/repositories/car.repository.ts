@@ -27,8 +27,8 @@ export class CarRepository {
 
     const query: any = {};
 
-    if (brand) query.brand = brand;
-    if (model) query.model = model;
+    if (brand) query.brand = { $regex: brand.toString(), $options: "i" };
+    if (model) query.carModel = { $regex: model.toString(), $options: "i" };
     if (available !== undefined) query.available = String(available) === "true";
     if (minPrice || maxPrice) query.price = {};
     if (minPrice) query.price.$gte = +minPrice;

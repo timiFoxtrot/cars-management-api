@@ -67,7 +67,7 @@ export class CarController {
     try {
       const managerId = req.user.id;
       const carId = req.params.id as string;
-      const result = this.carService.updateCar(carId, req.body, managerId);
+      const result = await this.carService.updateCar(carId, req.body, managerId);
       res.status(200).json({
         status: "success",
         message: "Car updated successfully",
@@ -85,7 +85,7 @@ export class CarController {
     try {
       const managerId = req.user.id;
       const carId = req.params.id as string;
-      const result = this.carService.deleteCar(carId, managerId);
+      const result = await this.carService.deleteCar(carId, managerId);
       res.status(200).json({
         status: "success",
         message: "Car deleted successfully",
