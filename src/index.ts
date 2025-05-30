@@ -10,9 +10,8 @@ import { carRouter } from "./routes/car.route";
 
 app.get("/health", (req: Request, res: Response): any => {
   return res.status(200).json({
-    status: "status",
-    message: "server is up and running",
-    data: null,
+    status: "success",
+    message: "server is up and running 🚀",
   });
 });
 

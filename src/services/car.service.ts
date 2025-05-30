@@ -2,11 +2,24 @@ import { BadRequestError } from "../common/errors/BadRequestError";
 import { NotFoundError } from "../common/errors/NotFoundError";
 import { ICar } from "../models/car.model";
 import { CarRepository } from "../repositories/car.repository";
+import { CategoryRepository } from "../repositories/category.repository";
 
 export class CarService {
-  constructor(private readonly carRepo: CarRepository) {}
+  constructor(
+    private readonly carRepo: CarRepository,
+    private readonly categoryRepo: CategoryRepository
+  ) {}
 
   async createCar(carData: ICar, managerId: string) {
+    // validate category
+    if (carData.category) {
+      const existignCategory = await this.categoryRepo.findById(
+        carData.category
+      );
+      if (!existignCategory) {
+        throw new BadRequestError("Category does not exist");
+      }
+    }
     return await this.carRepo.createCar(carData, managerId);
   }
 
@@ -40,7 +53,7 @@ export class CarService {
     if (!deletedCar) {
       throw new NotFoundError("Car not found or unauthorized");
     }
-    return deletedCar
+    return deletedCar;
   }
 
   async purchaseCar(carId: string, customerId: string) {

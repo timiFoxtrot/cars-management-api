@@ -11,12 +11,16 @@ const mockCarRepo = {
   purchaseCar: jest.fn(),
 };
 
+const mockCategoryRepo = {
+  findById: jest.fn()
+}
+
 describe("CarService", () => {
   let carService: CarService;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    carService = new CarService(mockCarRepo as any);
+    carService = new CarService(mockCarRepo as any, mockCategoryRepo as any);
   });
 
   it("should create a car", async () => {

@@ -9,11 +9,13 @@ import { CarRepository } from "../repositories/car.repository";
 import { CarService } from "../services/car.service";
 import { CarController } from "../controllers/car.controller";
 import { authenticate, authorize, roles } from "../common/middlewares/auth";
+import { CategoryRepository } from "../repositories/category.repository";
 
 export const carRouter = Router();
 
 const carRepository = new CarRepository();
-const carService = new CarService(carRepository);
+const categoryRepository = new CategoryRepository();
+const carService = new CarService(carRepository, categoryRepository);
 const carController = new CarController(carService);
 
 carRouter.post(
