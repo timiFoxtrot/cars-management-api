@@ -16,10 +16,10 @@ app.get("/health", (req: Request, res: Response): any => {
   });
 });
 
-app.use("/api/auth/manager", managerRouter);
-app.use("/api/auth/customer", customerRouter);
-app.use("/api/auth/category", categoryRouter);
-app.use("/api/auth/car", carRouter);
+app.use("/auth/manager", managerRouter);
+app.use("/auth/customer", customerRouter);
+app.use("/auth/category", categoryRouter);
+app.use("/auth/car", carRouter);
 
 app.use(handleErrors);
 
