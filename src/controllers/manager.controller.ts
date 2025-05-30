@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ManagerService } from "../services/manager.service";
+import logger from "../utils/logger";
 
 export class ManagerController {
   constructor(private managerService: ManagerService) {}
@@ -13,6 +14,7 @@ export class ManagerController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR REGISTERING MANAGER:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred during manager signup",
@@ -30,6 +32,7 @@ export class ManagerController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR LOGGING IN MANAGER:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred during manager login",
@@ -46,9 +49,10 @@ export class ManagerController {
             data: result,
           });
     } catch (error) {
+      logger.error(`ERROR FETCHING CUSTOMERS:: ${error.message}`);
         res.status(error.statusCode || 500).json({
             status: "error",
-            message: error.message || "An error occurred fetching customers",
+            message: error.message || "An error occurred while fetching customers",
           });
     }
   }

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { CarService } from "../services/car.service";
+import logger from "../utils/logger";
 
 export class CarController {
   constructor(private readonly carService: CarService) {}
@@ -14,6 +15,7 @@ export class CarController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR CREATING CAR:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred while creating car",
@@ -39,6 +41,7 @@ export class CarController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR FETCHING CARS:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred while fetching cars",
@@ -56,6 +59,7 @@ export class CarController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR FETCHING CAR:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred while fetching car",
@@ -74,6 +78,7 @@ export class CarController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR UPDATING CAR:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred while updating car",
@@ -92,6 +97,7 @@ export class CarController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR DELETING CAR:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred while deleting car",
@@ -110,6 +116,7 @@ export class CarController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR PURCHASING CAR:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred while purchasing car",

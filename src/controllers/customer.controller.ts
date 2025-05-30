@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { CustomerService } from "../services/customer.service";
+import logger from "../utils/logger";
 
 export class CustomerController {
   constructor(private customerService: CustomerService) {}
@@ -13,6 +14,7 @@ export class CustomerController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR REGISTERING CUSTOMER:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred during customer signup",
@@ -30,6 +32,7 @@ export class CustomerController {
         data: result,
       });
     } catch (error) {
+      logger.error(`ERROR LOGGING IN CUSTOMER:: ${error.message}`);
       res.status(error.statusCode || 500).json({
         status: "error",
         message: error.message || "An error occurred during customer login",
